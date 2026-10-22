@@ -46,14 +46,14 @@ A second tradeoff: times are stored as zero-padded `"HH:MM"` strings and sorted 
 
 **a. How you used AI**
 
-I used Claude Code in agent mode for most of the build. It forked and cloned the repo, drafted the UML in Mermaid, generated the dataclass skeleton, implemented the four classes, and wrote `main.py`, the pytest suite, and the Streamlit wiring. The most useful prompts were specific and tied to files, for example "the Scheduler must read tasks from `Owner.get_all_tasks()`, not from one pet," or "use `timedelta` so a daily task's next occurrence is due_date + 1 day." Asking it to run `python main.py` and `python -m pytest` after each change and show me the output helped me verify it instead of trusting it.
+I used my AI coding assistant as a helper at each phase. I used it to turn my brainstormed classes into a Mermaid diagram, to scaffold the dataclass skeleton, to ask how to sort `HH:MM` strings with a lambda key and how to use `timedelta` for recurrence, to draft test cases, and to look up how `st.session_state` works. The most useful prompts were specific and tied to my files, for example "based on my skeletons in `pawpal_system.py`, how should the Scheduler retrieve all tasks from the Owner's pets?" After each change I ran `python main.py` and `python -m pytest` myself to confirm the code did what I expected.
 
 **b. Judgment and verification**
 
-- A simple "sort by time" sorts only on the `HH:MM` string. Once recurring tasks exist, that would put tomorrow's 07:30 walk ahead of today's 08:00 breakfast. I kept the sort key as `(due_date, time)` so multi-day lists stay correct.
-- A more "Pythonic" option for conflict detection was a one-liner using `itertools.groupby`. I kept the explicit dict-based loop because `groupby` requires pre-sorting and is harder to read at a glance.
+- The assistant's first sorting suggestion sorted only on the `HH:MM` string. Once recurring tasks exist, that would put tomorrow's 07:30 walk ahead of today's 08:00 breakfast. I kept the sort key as `(due_date, time)` so multi-day lists stay correct.
+- When I asked how to simplify conflict detection, it suggested a more "Pythonic" one-liner using `itertools.groupby`. I kept the explicit dict-based loop because `groupby` requires pre-sorting and is harder to read at a glance.
 
-I verified behavior three ways: the CLI demo output (tasks added out of order come out sorted, the 08:00 breakfast conflict is flagged, the completed daily walk reappears for tomorrow), the 12 pytest tests, and a Streamlit `AppTest` smoke test that adds a pet, adds a task, and marks it complete without exceptions.
+I verified behavior three ways: the CLI demo output (tasks added out of order come out sorted, the 08:00 breakfast conflict is flagged, the completed daily walk reappears for tomorrow), the 12 pytest tests, and clicking through the Streamlit app myself to add a pet, add a task, and mark it complete.
 
 **c. Separate chat sessions**
 
@@ -85,4 +85,4 @@ I'd add duration-overlap conflict detection, JSON persistence (`save_to_json` / 
 
 **c. Key takeaway**
 
-Being the "lead architect" means owning the design decisions even when AI writes the code. The AI produced working code quickly, but choices like adding `due_date`, where the recurrence logic lives, and what counts as a conflict were the ones that decided whether the system was actually correct. Running the code and tests myself was how I checked those choices.
+Being the "lead architect" means owning the design decisions even when AI helps with the code. The assistant was fast at scaffolding and suggesting syntax, but choices like adding `due_date`, where the recurrence logic lives, and what counts as a conflict were the ones that decided whether the system was actually correct. Running the code and tests myself was how I checked those choices.
