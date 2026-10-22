@@ -10,15 +10,20 @@
 
 **What task did you give the agent?**
 
-<!-- Describe the goal you asked the agent to accomplish -->
+Build PawPal+ end to end: fork and clone the starter, draft the UML, generate dataclass skeletons, implement Owner/Pet/Task/Scheduler (sorting, filtering, recurrence, conflict detection, priority sort), write `main.py` and the pytest suite, wire `app.py` to the logic layer, and update the docs.
 
 **What did the agent do?**
 
-<!-- List the steps the agent took (files edited, commands run, etc.) -->
+- Ran `gh repo fork --clone` and read the starter files
+- Created `diagrams/uml_draft.mmd` and a skeleton in `pawpal_system.py`, then committed
+- Implemented `pawpal_system.py` and `main.py`, then ran `python main.py` to check the output
+- Wrote `tests/test_pawpal.py` and ran `python -m pytest` (12 passed)
+- Rewrote `app.py` to use `st.session_state` and the Scheduler, then smoke-tested it with Streamlit's `AppTest`
+- Wrote `diagrams/uml.mmd` / `uml_final.mmd`, `README.md`, and `reflection.md`, then committed each phase and pushed
 
 **What did you have to verify or fix manually?**
 
-<!-- Describe anything the agent got wrong or that required human review -->
+The first AppTest run timed out on Streamlit's cold start. Rerunning with a longer timeout passed. I reviewed the design choices (adding `due_date` and `pet_name` to Task, and sorting by `(due_date, time)` instead of time alone) and the reflection text to make sure they matched how I wanted the system to work.
 
 ---
 
